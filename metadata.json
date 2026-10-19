@@ -1,0 +1,7 @@
+{
+  "name": "Kisan Rog Nidan - Krishi Nidan Engine",
+  "description": "Strict, verified agricultural diagnostic and plant disease dosage lookup engine.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
