@@ -6,6 +6,7 @@ import {
   Calculator,
   CheckCircle2,
   AlertTriangle,
+  AlertCircle,
   Copy,
   Check,
   Volume2,
@@ -549,7 +550,7 @@ export default function App() {
             setScannedPrecautions(detectedPrec);
 
             // Save leaf scan to unified history
-            const scanReport = saveUnifiedReport({
+            saveUnifiedReport({
               reportType: 'leaf_scan',
               cropName: detectedP,
               diseaseName: detectedD,
@@ -558,7 +559,8 @@ export default function App() {
               precautions: detectedPrec,
               rawFormattedOutput: out
             });
-            setLatestGeneratedReport(scanReport);
+            // Note: latestGeneratedReport will be generated when user enters soil details on Tab 2
+            setLatestGeneratedReport(null);
             refreshHistory();
           } else {
             setResultOutput(NOT_FOUND_TEXT);
@@ -948,25 +950,71 @@ export default function App() {
               </div>
             </div>
 
-            {/* Transition Card to Tab 2 if scanned */}
+            {/* Leaf Diagnosis Result Card in Tab 1 */}
             {scannedPlant && (
-              <div className="p-4 bg-gradient-to-r from-emerald-950/80 via-slate-900 to-emerald-950/80 border border-emerald-600/70 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-lg">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2 text-xs font-bold text-emerald-300">
-                    <Sparkles className="w-4 h-4 text-emerald-400" />
-                    <span>{lang === 'hi' ? 'दवाई व खाद की सही मात्रा निकालें?' : 'Calculate Exact Medicine & Fertilizer Dosage?'}</span>
+              <div className="p-5 bg-gradient-to-br from-emerald-950/90 via-slate-900 to-slate-950 border-2 border-emerald-600/70 rounded-2xl shadow-xl space-y-4">
+                <div className="flex items-center justify-between border-b border-emerald-800/60 pb-3">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
+                      <Leaf className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-bold text-white">
+                        {lang === 'hi' ? 'पत्ती रोग पहचान परिणाम' : 'Leaf Pathology Diagnosis'}
+                      </h3>
+                      <span className="text-[10px] text-emerald-300 font-mono">
+                        {lang === 'hi' ? 'पहचान सफल • ICAR मानक' : 'Diagnosis Successful • ICAR Standards'}
+                      </span>
+                    </div>
                   </div>
-                  <p className="text-[11px] text-slate-300">
-                    <strong>{scannedPlant}</strong> {t.proceedToDosageDesc}
-                  </p>
+                  <span className="px-2.5 py-1 rounded-full bg-emerald-900/80 border border-emerald-700/60 text-emerald-300 text-xs font-semibold">
+                    ✓ {lang === 'hi' ? 'पहचान पूर्ण' : 'Diagnosed'}
+                  </span>
                 </div>
-                <button
-                  onClick={goToDosageWithScannedData}
-                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl flex items-center gap-1.5 shadow transition-all self-end sm:self-auto shrink-0"
-                >
-                  <span>{t.proceedToDosage}</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="p-3 bg-slate-950/80 border border-slate-800 rounded-xl space-y-1">
+                    <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
+                      {lang === 'hi' ? 'पहचाना गया पौधा' : 'Plant / Tree Identified'}
+                    </span>
+                    <div className="text-base font-bold text-white flex items-center gap-2">
+                      <Sprout className="w-4 h-4 text-emerald-400" />
+                      {scannedPlant}
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-slate-950/80 border border-slate-800 rounded-xl space-y-1">
+                    <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
+                      {lang === 'hi' ? 'पहचाना गया रोग / लक्षण' : 'Diagnosed Disease / Condition'}
+                    </span>
+                    <div className="text-base font-bold text-amber-300 flex items-center gap-2">
+                      <AlertCircle className="w-4 h-4 text-amber-400" />
+                      {scannedDisease}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Transition Card to Tab 2 to enter soil details */}
+                <div className="p-4 bg-emerald-950/60 border border-emerald-600/70 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-inner">
+                  <div className="space-y-1">
+                    <div className="text-xs font-bold text-emerald-300 flex items-center gap-1.5">
+                      <Sparkles className="w-4 h-4 text-emerald-400" />
+                      <span>{lang === 'hi' ? 'दवाई व खाद की सही मात्रा निकालें' : 'Proceed to Calculate Exact Dosage & Soil Nutrients'}</span>
+                    </div>
+                    <p className="text-[11px] text-slate-300 max-w-lg">
+                      {lang === 'hi'
+                        ? `${scannedPlant} के लिए आगे पेज पर खेत का रकबा व मिट्टी की जांच (pH, NPK) दर्ज करें, तभी दवा व खाद की सटीक मात्रा का विवरण बनेगा।`
+                        : `Enter field area and soil test parameters (pH, NPK) on the next page to calculate the exact prescription and fertilizer amendments for ${scannedPlant}.`}
+                    </p>
+                  </div>
+                  <button
+                    onClick={goToDosageWithScannedData}
+                    className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl flex items-center gap-2 shadow-lg shadow-emerald-950 transition-all self-end sm:self-auto shrink-0"
+                  >
+                    <span>{t.proceedToDosage}</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             )}
           </div>
@@ -1529,7 +1577,7 @@ export default function App() {
         )}
 
         {/* ================= SINGLE UNIFIED REPORT OUTPUT DISPLAY ================= */}
-        {activeTab !== 'history' && (resultOutput || latestGeneratedReport) && (
+        {activeTab !== 'history' && activeTab !== 'upload' && (resultOutput || latestGeneratedReport) && (
           <section className="space-y-4 pt-2">
             {isNotFound ? (
               <div className="p-5 bg-amber-950/40 border-2 border-amber-500/70 rounded-2xl text-amber-200 font-mono text-xs flex items-start gap-3 shadow-xl">

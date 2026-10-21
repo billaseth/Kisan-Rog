@@ -93,9 +93,9 @@ app.post('/api/analyze', async (req: Request, res: Response) => {
     const apiKey = process.env.GEMINI_API_KEY;
     if (apiKey) {
       const candidateModels = [
-        'gemini-3-flash-preview',
         'gemini-3.8-flash',
-        'gemini-3.1-flash-lite'
+        'gemini-3.1-flash-lite',
+        'gemini-flash-latest'
       ];
 
       const ai = new GoogleGenAI({
@@ -232,9 +232,9 @@ app.post('/api/parse-soil-report', async (req: Request, res: Response) => {
     });
 
     const candidateModels = [
-      'gemini-3-flash-preview',
-      'gemini-2.5-flash',
-      'gemini-3.8-flash'
+      'gemini-3.8-flash',
+      'gemini-3.1-flash-lite',
+      'gemini-flash-latest'
     ];
 
     const promptText = `Analyze this Soil Health Card (मृदा स्वास्थ्य कार्ड) or Soil Testing Laboratory Report PDF/image.
